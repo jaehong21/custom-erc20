@@ -53,7 +53,7 @@ contract CustomToken is Ownable {
       address _to,
       uint256 _value
    ) public returns (bool success) {
-      require(_allowance[_from][_to] >= _value);
+      require(_allowance[_from][msg.sender] >= _value);
       _balance[_from] -= _value;
       _balance[_to] += _value;
       emit Transfer(_from, _to, _value);

@@ -20,19 +20,19 @@ contract("CustomToken", function (accounts) {
 
       it("TransferFrom A to B by C", async () => {
          const A = accounts[0];
-         const B = accounts[1];
-         const C = accounts[2];
+         const B = accounts[2];
+         const C = accounts[3];
 
          await this.instance.approve(C, 1000, { from: A });
-         await this.instance.transferFrom(A, C, 500, { from: C });
+         await this.instance.transferFrom(A, B, 500, { from: C });
 
          const allowance = await this.instance.allowance(A, C);
 
          const balanceA = await this.instance.balanceOf(A);
-         const balanceC = await this.instance.balanceOf(C);
+         const balanceB = await this.instance.balanceOf(B);
 
          assert.equal(1000, allowance.toNumber());
-         assert.equal(500, balanceC.toNumber());
+         assert.equal(500, balanceB.toNumber());
       });
    });
 });
