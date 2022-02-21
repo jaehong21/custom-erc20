@@ -1,9 +1,15 @@
 const assert = require("assert");
-const test_customToken = artifacts.require("CustomToken");
+const BigNumber = require("bignumber.js");
+const test_customToken_info = artifacts.require("CustomToken");
+
+const parseInt = (bignumber) => {
+   const num = new BigNumber(bignumber);
+   return num.toNumber();
+};
 
 contract("CustomToken", function (accounts) {
    before(async () => {
-      this.instance = await test_customToken.deployed();
+      this.instance = await test_customToken_info.deployed();
    });
 
    describe("Custom Token checking basic Information.sol", () => {
@@ -17,26 +23,23 @@ contract("CustomToken", function (accounts) {
          assert.equal(symbol, "CUT", "Wrong Initialized Symbol");
       });
 
-      it("decimals: 2", async () => {
+      it("decimals: 0", async () => {
          const decimals = await this.instance.decimals();
-         assert.equal(decimals, 2, "Wrong Initialized Decimals");
+         assert.equal(decimals, 0, "Wrong Initialized Decimals");
       });
 
-      it("Total Supply: 10*10  - 2 decimals", async () => {
+      it("Total Supply: 10*10", async () => {
          const totalSupply = await this.instance.totalSupply();
-         const decimals = await this.instance.decimals();
-         assert.equal(
-            totalSupply / 10 ** decimals,
-            10 ** 10 / 10 ** decimals,
-            "Wrong Initialized Total Supply",
-         );
+         assert.equal(totalSupply, 10 ** 10, "Wrong Initialized Total Supply");
       });
    });
 
    describe("checking balance of Custom Token", () => {
       it("Checking Balance", async () => {
+         const totalSupply = await this.instance.totalSupply();
          const balance = await this.instance.balanceOf(accounts[0]);
-         assert.equal(0, balance, "Wrong Balance of Owner");
+
+         BigNumber(totalSupply).eq(balance);
       });
    });
 });

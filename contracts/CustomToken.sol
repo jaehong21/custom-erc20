@@ -9,6 +9,9 @@ contract CustomToken is Ownable {
    constructor(string memory name_, string memory symbol_) {
       _name = name_;
       _symbol = symbol_;
+
+      address _admin = admin();
+      _balance[_admin] = totalSupply();
    }
 
    function name() public view returns (string memory) {
@@ -19,7 +22,7 @@ contract CustomToken is Ownable {
       return _symbol;
    }
 
-   uint8 private _decimals = 2;
+   uint8 private _decimals = 0;
    uint256 private _totalSupply = 10**10;
 
    function decimals() public view returns (uint8) {
@@ -37,7 +40,8 @@ contract CustomToken is Ownable {
       return _balance[_owner];
    }
 
-   function transfer(address _to, uint256 _amount) public onlyOwner returns (bool success) {
+   function transfer(address _to, uint256 _amount) public returns (bool success) {
+      require(_balance[msg.sender] >= _amount);
       _balance[msg.sender] -= _amount;
       _balance[_to] += _amount;
       emit Transfer(msg.sender, _to, _amount);
